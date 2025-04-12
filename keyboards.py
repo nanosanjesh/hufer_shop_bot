@@ -1,26 +1,60 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 
-# 🔹 کیبورد اصلی برای کاربران
-user_main_keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
-user_main_keyboard.add(KeyboardButton("🛍 مشاهده محصولات"))
-user_main_keyboard.add(KeyboardButton("🛒 سبد خرید"), KeyboardButton("📞 پشتیبانی"))
+# 🔹 کیبورد برای شروع ربات
+def start_keyboard():
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
+    keyboard.add(KeyboardButton("شروع سفارش"))
+    return keyboard
 
-# 🔹 کیبورد برای ارسال شماره تماس (اختیاری اگر بخوای مستقیماً بفرسته)
-phone_keyboard = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-phone_keyboard.add(KeyboardButton("ارسال شماره تماس", request_contact=True))
+# 🔹 کیبورد برای ثبت‌نام (دریافت شماره تلفن)
+def register_keyboard():
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    keyboard.add(KeyboardButton("📱 ارسال شماره تلفن", request_contact=True))
+    return keyboard
+# 🔹 کیبورد برای نمایش لیست محصولات
+def product_list_keyboard(products):
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    for product in products:
+        keyboard.add(KeyboardButton(product.name))  # استفاده از نام محصول
+    keyboard.add(KeyboardButton("🏠 بازگشت به منو"))
+    return keyboard
 
-# 🔹 دکمه تایید ارسال فیش واریزی
-confirm_payment_keyboard = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-confirm_payment_keyboard.add(KeyboardButton("✅ فیش را ارسال کردم"))
+# 🔹 کیبورد کاربر بعد از انتخاب محصول (سبد خرید)
+def cart_actions_keyboard():
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    keyboard.add(
+        KeyboardButton("🛒 مشاهده سبد خرید"),
+        KeyboardButton("✅ تایید سفارش"),
+        KeyboardButton("🏠 بازگشت به منو")
+    )
+    return keyboard
 
-# 🔹 دکمه‌های ادمین برای مدیریت محصول
-admin_keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
-admin_keyboard.add(KeyboardButton("➕ افزودن محصول"))
-admin_keyboard.add(KeyboardButton("📦 لیست محصولات"))
-admin_keyboard.add(KeyboardButton("🏠 بازگشت به منو"))
+# 🔹 کیبورد برای تایید یا لغو سفارش
+def confirm_order_keyboard():
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    keyboard.add(
+        KeyboardButton("📤 ارسال فیش واریزی"),
+        KeyboardButton("❌ لغو سفارش")
+    )
+    return keyboard
 
-# 🔹 کیبورد inline برای هر محصول (افزودن به سبد خرید)
+# 🔹 کیبورد برای ارسال فیش واریزی (اختیاری)
+def payment_receipt_keyboard():
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    keyboard.add(KeyboardButton("📤 ارسال تصویر فیش"))
+    return keyboard
+
+# 🔹 کیبورد مدیریت برای ادمین (افزودن یا مشاهده محصولات)
+def admin_keyboard():
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
+    keyboard.add(
+        KeyboardButton("➕ افزودن محصول"),
+        KeyboardButton("📦 لیست محصولات")
+    )
+    return keyboard
+
+# 🔹 کیبورد دکمه‌های اینلاین برای هر محصول (افزودن به سبد خرید)
 def product_inline_keyboard(product_id: int):
     markup = InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton("➕ افزودن به سبد خرید", callback_data=f"add_{product_id}"))
+    markup.add(InlineKeyboardButton("➕ افزودن به سبد خرید", callback_data=f"add_to_cart:{product_id}"))
     return markup
